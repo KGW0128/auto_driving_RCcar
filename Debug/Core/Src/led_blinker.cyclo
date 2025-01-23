@@ -1,0 +1,5 @@
+../Core/Src/led_blinker.c:13:6:LED_All_Timer_Interrupt	1
+../Core/Src/led_blinker.c:20:6:LED_Left_Timer_Interrupt	1
+../Core/Src/led_blinker.c:26:6:LED_Right_Timer_Interrupt	1
+../Core/Src/led_blinker.c:33:6:Start_Blinker	1
+../Core/Src/led_blinker.c:39:6:Stop_Blinker	1

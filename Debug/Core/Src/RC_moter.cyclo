@@ -1,0 +1,6 @@
+../Core/Src/RC_moter.c:11:6:Moter_Init	1
+../Core/Src/RC_moter.c:21:6:Moter_Advance	1
+../Core/Src/RC_moter.c:34:6:Moter_Junior	1
+../Core/Src/RC_moter.c:46:6:Moter_Right	1
+../Core/Src/RC_moter.c:59:6:Moter_Left	1
+../Core/Src/RC_moter.c:74:6:Moter_Stop	1
