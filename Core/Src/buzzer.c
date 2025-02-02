@@ -10,7 +10,7 @@
 
 uint16_t song[]=
     {
-        Do,Mi,Sol,Do,Mi,Sol,La,La,La,Sol,
+    		Do,Do,Mi,Sol,Do,Mi,Sol,La,La,La,Sol,
         Fa,Fa,Fa,Mi,Mi,Mi,Re,Re,Re,Do
     };
 

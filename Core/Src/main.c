@@ -18,13 +18,14 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include  "RC_moter.h"
+#include "RC_moter.h"
 #include "uart_bluetooth.h"
 #include "buzzer.h"
 /* USER CODE END Includes */
@@ -53,6 +54,7 @@
 
 
 uint8_t rxData = 0;
+uint8_t save_rxData = 0;
 
 uint8_t buzzer_Check = 0;
 
@@ -61,61 +63,43 @@ uint8_t led_left = 0;
 uint8_t led_right = 0;
 uint8_t led_all = 0;
 
+//uart1 블루투스 호출 확인용변수
+uint8_t uart_call = 0;
+
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
+
+
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 
-  HAL_UART_Receive_IT(&huart1, &rxData, sizeof(rxData));
-
-  //블루투스 연결된 uart라면
-  if(huart->Instance==USART1)
-  {
-    uart_bluetooth_call();
-  }
 
 
-}
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  if (htim->Instance == TIM11)
-  {
+	HAL_UART_Receive_IT(&huart1, &rxData, sizeof(rxData));
 
-    //클락션 및 후진
-    if(buzzer_Check==1)
-    {
-      Buzzer_Timer_Interrupt();  // 타이머 인터럽트 처리
-    }
+	//블루투스 연결된 uart라면
+	if(huart->Instance==USART1)
+	{
+		if(save_rxData != rxData)
+		{
 
+			uart_bluetooth_call();
+			uart_call = 1;
+			save_rxData = rxData;
 
-    //쌍 깝박이
-    if(led_all==1)
-    {
-      LED_All_Timer_Interrupt();
-    }
-
-    //왼쪽 깜박이
-    if(led_left==1)
-    {
-      LED_Left_Timer_Interrupt();
-    }
-
-
-    //오른쪽 깜박이
-    if(led_right==1)
-    {
-      LED_Right_Timer_Interrupt();
-    }
-
-  }
+		}
+	}
 
 }
+
+
 
 
 
@@ -162,60 +146,82 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM5_Init();
   MX_TIM11_Init();
+  MX_TIM2_Init();
+  MX_TIM10_Init();
   /* USER CODE BEGIN 2 */
 
-  //모터 초기 설정
-  Moter_Init();
+	//모터 초기 설정
+	Moter_Init();
 
-  //보내는 인터럽트 활성화
-  HAL_UART_Receive_IT(&huart1, &rxData, sizeof(rxData));
+	//보내는 인터럽트 활성화
+	HAL_UART_Receive_IT(&huart1, &rxData, sizeof(rxData));
 
-  //받는 인터럽트 활성화
-  HAL_UART_Receive_IT(&huart2, &rxData, sizeof(rxData));
+	//받는 인터럽트 활성화
+	HAL_UART_Receive_IT(&huart2, &rxData, sizeof(rxData));
 
 
 
-  //부저
-  HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
+	//부저
+	HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
+	Stop_Buzzer();
 
-  //딜레이 계산용 11번 타이머 활성화(시스템 딜레이 방지용 타이머)
-  HAL_TIM_PWM_Start(&htim11, TIM_CHANNEL_1);
+	//딜레이 계산용 11번 타이머 활성화(시스템 딜레이 방지용 타이머)
+	HAL_TIM_PWM_Start(&htim11, TIM_CHANNEL_1);
+
+
+	//초음파
+	//32bit 타이머를 16bit(65535)로 스케일링해서 사용
+	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_1);//울트라소닉용
+	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_2);//울트라소닉용
+	HAL_TIM_IC_Start_IT(&htim2, TIM_CHANNEL_3);//울트라소닉용
+
 
 
   /* USER CODE END 2 */
 
+  /* Init scheduler */
+  osKernelInitialize();
+
+  /* Call init function for freertos objects (in cmsis_os2.c) */
+  MX_FREERTOS_Init();
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+	while (1)
+	{
 
-    //깜박이를 켰다면
-    if(led_all==1||led_left==1||led_right==1)
-    {
-      Start_Blinker();
-    }
-    else
-    {
-      Stop_Blinker();
-    }
-
-
-    //클락션을 울렸다면
-    if(buzzer_Check==1)
-    {
-      Start_Buzzer();
-    }
-    else
-    {
-      Stop_Buzzer();
-    }
-
+		//	  //깜박이를 켰다면
+		//	      if(led_all==1||led_left==1||led_right==1)
+		//	      {
+		//	        Start_Blinker();
+		//	      }
+		//	      else
+		//	      {
+		//	        Stop_Blinker();
+		//	      }
+		//
+		//
+		//	      //클락션을 울렸다면
+		//	      if(buzzer_Check==1)
+		//	      {
+		//	        Start_Buzzer();
+		//	      }
+		//	      else
+		//	      {
+		//	        Stop_Buzzer();
+		//	      }
+		//
 
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+	}
   /* USER CODE END 3 */
 }
 
@@ -269,17 +275,70 @@ void SystemClock_Config(void)
 /* USER CODE END 4 */
 
 /**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM9 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+	if (htim->Instance == TIM11)
+	{
+
+		//클락션 및 후진
+		if(buzzer_Check==1)
+		{
+			Buzzer_Timer_Interrupt();  // 타이머 인터럽트 처리
+		}
+
+
+		//쌍 깝박이
+		if(led_all==1)
+		{
+			LED_All_Timer_Interrupt();
+		}
+
+		//왼쪽 깜박이
+		if(led_left==1)
+		{
+			LED_Left_Timer_Interrupt();
+		}
+
+
+		//오른쪽 깜박이
+		if(led_right==1)
+		{
+			LED_Right_Timer_Interrupt();
+		}
+
+	}
+
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM9) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
+
+/**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+	/* User can add his own implementation to report the HAL error return state */
+	__disable_irq();
+	while (1)
+	{
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -294,7 +353,7 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
+	/* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }

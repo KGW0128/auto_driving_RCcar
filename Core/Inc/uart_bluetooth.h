@@ -10,7 +10,7 @@
 
 #include "usart.h"
 
-uart_bluetooth_call();
+void uart_bluetooth_call();
 
 
 
