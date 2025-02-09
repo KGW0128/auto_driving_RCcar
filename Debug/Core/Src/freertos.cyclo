@@ -1,5 +1,5 @@
-../Core/Src/freertos.c:86:1:__io_putchar	1
-../Core/Src/freertos.c:174:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:228:6:StartDefaultTask	5
-../Core/Src/freertos.c:269:6:StartTask02	2
-../Core/Src/freertos.c:329:6:StartTask03	2
+../Core/Src/freertos.c:58:1:__io_putchar	1
+../Core/Src/freertos.c:142:6:MX_FREERTOS_Init	1
+../Core/Src/freertos.c:196:6:StartDefaultTask	5
+../Core/Src/freertos.c:237:6:StartTask02	2
+../Core/Src/freertos.c:290:6:StartTask03	2

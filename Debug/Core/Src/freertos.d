@@ -40,7 +40,7 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
  ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
  ../Core/Inc/usart.h ../Core/Inc/main.h ../Core/Inc/sensor.h \
  ../Core/Inc/tim.h ../Core/Inc/gpio.h ../Core/Inc/delayus.h \
- ../Core/Inc/RC_moter.h
+ ../Core/Inc/RC_moter.h ../Core/Inc/sensor.h
 ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
 ../Core/Inc/FreeRTOSConfig.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
@@ -88,3 +88,4 @@ Core/Src/freertos.o: ../Core/Src/freertos.c \
 ../Core/Inc/gpio.h:
 ../Core/Inc/delayus.h:
 ../Core/Inc/RC_moter.h:
+../Core/Inc/sensor.h:

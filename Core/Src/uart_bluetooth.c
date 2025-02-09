@@ -25,6 +25,10 @@ extern uint8_t led_right;
 extern uint8_t auto_drive_mode;
 
 
+extern uint8_t speed;
+extern uint8_t L_speed;
+extern uint8_t R_speed;
+
 void uart_bluetooth_call()
 {
 
@@ -86,23 +90,50 @@ void uart_bluetooth_call()
 		led_all ^= 1;
 		break;
 
-	case 'A'://자율주행 모드
+	case 'C'://동그라미 속도 변속
+
+		if(speed == 80)
+		{
+			speed = 100;
+			L_speed = 100;
+			R_speed = 100;
+		}
+		else
+		{
+			speed = 80;
+			L_speed = 80;
+			R_speed = 80;
+		}
+
+		break;
+
+
+
+	case 'A'://start 자율주행 모드
 		auto_drive_mode ^= 1;
 		break;
 
 
-	default://오류
+	default://버튼에서 손가락을 땠을 때, 또는 오류가 났을 때
+
+		//자율주행 모드가 아니라면
 		if(auto_drive_mode==0)
 		{
+			//모터 정지
 			Moter_Stop();
 
-			HAL_UART_Transmit(&huart2, (uint8_t*)"data in 0\r\n", strlen("data in 0\r\n"), 0xFFFF);
-
-			buzzer_Check = 0;
-
+			//좌,우회전 깜박이 끄기
 			led_left=0;
 			led_right=0;
 		}
+
+		//빈값 반환 확인
+		HAL_UART_Transmit(&huart2, (uint8_t*)"data in 0\r\n", strlen("data in 0\r\n"), 0xFFFF);
+
+		//부저 끄기
+		buzzer_Check = 0;
+
+
 		break;
 	}
 

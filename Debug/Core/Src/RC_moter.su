@@ -1,6 +1,7 @@
-../Core/Src/RC_moter.c:11:6:Moter_Init	8	static
-../Core/Src/RC_moter.c:21:6:Moter_Advance	8	static
-../Core/Src/RC_moter.c:34:6:Moter_Junior	8	static
-../Core/Src/RC_moter.c:46:6:Moter_Right	8	static
-../Core/Src/RC_moter.c:59:6:Moter_Left	8	static
-../Core/Src/RC_moter.c:74:6:Moter_Stop	8	static
+../Core/Src/RC_moter.c:25:6:Moter_Init	8	static
+../Core/Src/RC_moter.c:35:6:Moter_Advance	8	static
+../Core/Src/RC_moter.c:48:6:Moter_Junior	8	static
+../Core/Src/RC_moter.c:60:6:Moter_Right	8	static
+../Core/Src/RC_moter.c:73:6:Moter_Left	8	static
+../Core/Src/RC_moter.c:88:6:Moter_Stop	8	static
+../Core/Src/RC_moter.c:103:6:Moter_Auto_drive	16	static

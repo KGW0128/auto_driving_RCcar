@@ -22,6 +22,9 @@
 #define MOTOR_GPIO_PORT   GPIOB
 
 
+#include "sensor.h"
+
+
 void Moter_Init();
 
 void Moter_Advance();   //전진
@@ -30,6 +33,9 @@ void Moter_Left();      //좌회전
 void Moter_Right();     //우회전
 
 void Moter_Stop();     //정지
+
+void Moter_Auto_drive(uint8_t mid, uint8_t right, uint8_t left); //자율주행
+
 
 
 #endif /* INC_RC_MOTER_H_ */
